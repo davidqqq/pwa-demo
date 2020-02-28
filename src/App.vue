@@ -1,21 +1,37 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="bg-gray-300">
+    <div v-if="online">You are currently online</div>
+    <div v-else>You are currently offline but dont worry you can still register account</div>
+    <div>
+      <!-- <div
+        v-if="loading"
+        class="absolute fixed w-full h-full top-0 left-0 flex items-center justify-center"
+      >
+        <div class="absolute w-full h-full bg-gray-900 opacity-50" />
+        <div class="bg-white mt-4 mr-4 absolute" style="max-width:800px">
+          <Loader width="30" height="30" />
+          <p>Please wait while we register account for you</p>
+        </div>
+      </div>-->
+      <router-view />
+    </div>
   </div>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import "../output.css";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      online: navigator.onLine
+    };
+  },
+  async mounted() {
+    window.addEventListener("online", () => (this.online = true));
+    window.addEventListener("offline", () => (this.online = false));
+    if (localStorage.getItem("token")) this.$router.push("/post");
   }
-}
+};
 </script>
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -23,6 +39,19 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  min-height: 100vh;
 }
+
+/* #nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
+} */
 </style>
