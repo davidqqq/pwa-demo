@@ -2,7 +2,8 @@
   <div id="app" class="bg-gray-300">
     <div v-if="online">You are currently online</div>
     <div v-else>You are currently offline but dont worry you can still register account</div>
-    <div>
+    <LoginView v-if="!login" />
+    <div v-else>
       <!-- <div
         v-if="loading"
         class="absolute fixed w-full h-full top-0 left-0 flex items-center justify-center"
@@ -19,16 +20,30 @@
 </template>
 <script>
 import "../output.css";
+import * as firebase from "firebase";
+import LoginView from "@/views/Home.vue";
 export default {
+  components: {
+    LoginView
+  },
   data() {
     return {
-      online: navigator.onLine
+      online: navigator.onLine,
+      login: false
     };
   },
   async mounted() {
     window.addEventListener("online", () => (this.online = true));
     window.addEventListener("offline", () => (this.online = false));
-    if (localStorage.getItem("token")) this.$router.push("/post");
+    firebase.auth().onAuthStateChanged(async user => {
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user.toJSON()));
+        localStorage.setItem("token", await user.getIdToken());
+        this.login = true;
+      } else {
+        this.login = false;
+      }
+    });
   }
 };
 </script>

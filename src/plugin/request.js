@@ -29,18 +29,72 @@ RequestService.install = function(Vue) {
 
   function getUserDetail() {
     return api.getUserDetail();
-    //   .getIdToken(/* forceRefresh */ true);
+  }
+
+  function getMyClass() {
+    return api.getMyClass();
+  }
+
+  function getMyTeam() {
+    return api.getMyTeam();
+  }
+
+  function likePost(postId) {
+    return api.likePost(postId);
+  }
+
+  function getPosts(classroom, onSnapshot) {
+    console.log("classroom", classroom);
+    const unsubscribe = firebase
+      .firestore()
+      .collection("post")
+      .where("classroom", "==", classroom)
+      .orderBy("timestamp")
+      .onSnapshot(onSnapshot);
+    return unsubscribe;
+  }
+
+  function getUserDetails(ids) {
+    return api.getUserDetails(ids);
   }
 
   function getIdToken() {
     return firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
   }
+  function getNotifications(onSnapshot) {
+    const { uid } = JSON.parse(localStorage.getItem("user"));
+    const unsubscribe = firebase
+      .firestore()
+      .collection("notification")
+      .where("user", "==", uid)
+      .orderBy("timestamp")
+      .onSnapshot(onSnapshot);
+    return unsubscribe;
+  }
+
+  function followNewClassmates(classroom, onSnapshot) {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("users")
+      .where("classroom", "==", classroom)
+      .orderBy("team")
+      .onSnapshot(onSnapshot);
+    return unsubscribe;
+  }
+
   Vue.prototype.$request = {
     registerAccount,
     loginAccount,
     getUserDetail,
     logoutAccount,
-    getIdToken
+    getIdToken,
+    getMyClass,
+    getMyTeam,
+    followNewClassmates,
+    getPosts,
+    getNotifications,
+    likePost,
+    getUserDetails
   };
 };
 

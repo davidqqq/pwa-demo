@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <div class="shadow container bg-white m-auto p-3" style="max-width:800px;">
+  <div class="home mt-5">
+    <div class="shadow container bg-white m-auto p-3" style="max-width:400px;">
       <div v-if="message&&message.type==='error'" class="bg-red-500">
         <p class="text-white">{{message.text}}</p>
       </div>
@@ -10,6 +10,7 @@
       <div v-if="message&&message.type==='warn'" class="bg-orange-500">
         <p class="text-white">{{message.text}}</p>
       </div>
+      <img src="/img/wiread.png" class="m-auto" />
       <div class="mt-1 flex justify-center">
         <button
           class="flex-1"
@@ -66,9 +67,8 @@ export default {
       this.isLoading = true;
       try {
         await this.$request.loginAccount(form);
-        localStorage.setItem("token", await this.$request.getIdToken());
         this.isLoading = false;
-        this.$router.push("/post");
+        // this.$router.push("/post");
       } catch (err) {
         this.isLoading = false;
         this.message = {
@@ -94,6 +94,21 @@ export default {
       }
     },
     async onRegister(details) {
+      if (
+        !details.id ||
+        !details.username ||
+        !details.email ||
+        !details.password ||
+        !details.classroom ||
+        !details.team
+      ) {
+        alert("Missing required field");
+        return;
+      }
+      if (!details.email.includes("@")) {
+        alert("Invalid email");
+        return;
+      }
       this.isLoading = true;
       if (navigator.onLine) {
         const res = await this.$request.registerAccount(details);
@@ -123,7 +138,4 @@ export default {
 };
 </script>
 <style scoped>
-.home {
-  margin-top: 15rem;
-}
 </style>

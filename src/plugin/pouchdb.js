@@ -9,7 +9,6 @@ PouchService.install = function(Vue) {
 
   async function getPendingRegistration() {
     const pending = await db.get("pending", { include_docs: true });
-    console.log(pending);
     if (pending) {
       return pending;
     } else {

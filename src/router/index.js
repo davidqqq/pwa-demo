@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
 import Post from "../views/Post.vue";
 import api from "../api";
 
@@ -10,7 +9,7 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Post
   },
 
   {
